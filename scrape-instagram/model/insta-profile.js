@@ -3,8 +3,8 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const instaProfileSchema = new Schema({
-  _id: {
-    type: "String",
+  scrape_date: {
+    type: "Date",
   },
   user_id: {
     type: "String",
@@ -32,6 +32,9 @@ const instaProfileSchema = new Schema({
   },
   total_posts_count: {
     type: "Number",
+  },
+  latest_posts: {
+    type: ["Mixed"],
   },
 });
 

@@ -1,6 +1,6 @@
 {
   "name": "scrape-tiktok",
-  "version": "6.13.4",
+  "version": "1.0.0",
   "description": "Scrape TikTok posts from Username. No login required",
   "bin": {
     "scrape-tiktok": "./bin/cli.js"

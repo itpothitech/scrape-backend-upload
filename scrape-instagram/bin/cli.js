@@ -11,7 +11,7 @@ const startScraper = async (argv) => {
     // console.log(argv);
     let scraper = await instaScrape(argv).getPosts();
 
-    console.log({ scraper });
+    console.log(scraper);
   } catch (error) {
     console.log(error.message);
   }

@@ -1,20 +1,7 @@
 const InstaTouch = require("instatouch");
 const mongoose = require("mongoose");
 
-const InstaPost = require("../model/insta-posts");
 const InstaProfile = require("../model/insta-profile");
-
-const JSON_LABALES = {
-  user_id: "graphql.user.username",
-  full_name: "graphql.user.full_name",
-  biography: "graphql.user.biography",
-  profile_photo: "graphql.user.profile_pic_url_hd",
-  is_verified: "graphql.user.is_verified",
-  followers_count: "graphql.user.edge_followed_by.count",
-  following_count: "graphql.user.edge_follow.count",
-  total_posts_count: "graphql.user.edge_owner_to_timeline_media.count",
-  posts_list_array: "graphql.user.edge_owner_to_timeline_media.edges",
-};
 
 const TIMEOUT = 50;
 
@@ -35,6 +22,14 @@ class ScrapeInsta {
         // });
         // console.log(posts);
 
+        let currentDate = new Date();
+        const start = currentDate.getTime();
+        const year = currentDate.getFullYear();
+        const month = currentDate.getMonth() + 1;
+        const date = currentDate.getDate();
+        const scrapeDate = year + "-" + month + "-" + date;
+
+        console.log("***** Insta scraping ***** [" + currentDate + "]");
         const userData = await InstaTouch.getUserMeta(this._id, {
           count: this._count,
           timeout: TIMEOUT,
@@ -53,12 +48,12 @@ class ScrapeInsta {
 
         if (userData) {
           //Extract required data
-          const latestPostsView = [];
+          const latestPostsCollector = [];
           const postsArray =
             userData.graphql.user.edge_owner_to_timeline_media.edges;
           postsArray.forEach((element) => {
             const eachPost = {
-              _id: element.node.id,
+              // _id: element.node.id,
               post_id: element.node.id,
               post_type: element.node.__typename,
               post_display_image: element.node.display_url,
@@ -71,12 +66,13 @@ class ScrapeInsta {
               post_video_view_count: element.node.video_view_count,
             };
             // console.log("each element =>" , eachPost)
-            latestPostsView.push(eachPost);
+            latestPostsCollector.push(eachPost);
           });
-          console.log("latestPostsView ==>", latestPostsView.length);
+          // console.log("latestPostsCollector ==>", latestPostsCollector.length);
 
           const profileArray = [];
           const profile = {
+            scrape_date: scrapeDate,
             user_id: userData.graphql.user.id,
             user_name: userData.graphql.user.username,
             full_name: userData.graphql.user.full_name,
@@ -87,8 +83,9 @@ class ScrapeInsta {
             following_count: userData.graphql.user.edge_follow.count,
             total_posts_count:
               userData.graphql.user.edge_owner_to_timeline_media.count,
+            latest_posts: latestPostsCollector,
           };
-          profileArray.push({ _id: profile.id, profile });
+          profileArray.push({ profile });
           // console.log("profileArray ======>", profileArray);
 
           //Connect DB
@@ -111,17 +108,14 @@ class ScrapeInsta {
           } catch (error) {
             console.log(error);
           }
-          // Save post details in DB
-          try {
-            await InstaPost.collection.insertMany(latestPostsView, {
-              ordered: false,
-            });
-          } catch (err) {
-            console.log(err);
-          }
 
           // close DB connection
           mongoose.disconnect();
+          currentDate = new Date();
+          const timeTaken = currentDate.getTime() - start;
+          console.log(
+            "InstaScrape=ID:[" + this._id + "]=perf-time:[" + timeTaken + "]"
+          );
         } // End of IF condition
         return resolve({
           id: this._id,

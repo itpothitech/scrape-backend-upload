@@ -3,8 +3,8 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const tiktokProfileSchema = new Schema({
-  _id: {
-    type: "String",
+  scrape_date: {
+    type: "Date",
   },
   secUid: {
     type: "String",
@@ -56,6 +56,9 @@ const tiktokProfileSchema = new Schema({
   },
   openFavorite: {
     type: "Boolean",
+  },
+  latest_posts: {
+    type: ["Mixed"],
   },
 });
 
