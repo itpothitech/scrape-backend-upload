@@ -1,9 +1,9 @@
 {
-  "name": "scrape-insta",
+  "name": "scrape-profiles",
   "version": "1.0.0",
   "description": "Scrape TikTok posts from Username. No login required",
   "bin": {
-    "scrape-tiktok": "./bin/cli.js"
+    "scrape-profiles": "./scrape-profiles/cli.js"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -11,7 +11,10 @@
   "dependencies": {
     "async": "^3.1.0",
     "yargs": "^14.0.0",
+    "fs-js": "^1.0.6",
+    "xlsx": "^0.16.1",
     "mongoose": "^5.9.7",
-    "instatouch": "^2.2.5"
+    "instatouch": "^2.2.5",
+    "tiktok-scraper": "^1.1.19"
   }
 }
