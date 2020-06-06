@@ -4,6 +4,7 @@
 /node_modules
 scrape-tiktok/node_modules
 scrape-instagram/node_modules
+scrape-profiles/node_modules
 /.pnp
 .pnp.js
 

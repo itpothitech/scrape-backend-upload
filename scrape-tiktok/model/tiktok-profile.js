@@ -6,56 +6,32 @@ const tiktokProfileSchema = new Schema({
   scrape_date: {
     type: "Date",
   },
-  secUid: {
+  user_id: {
     type: "String",
   },
-  userId: {
+  user_name: {
     type: "String",
   },
-  isSecret: {
+  full_name: {
+    type: "String",
+  },
+  biography: {
+    type: "String",
+  },
+  profile_photo: {
+    type: "String",
+  },
+  is_verified: {
     type: "Boolean",
   },
-  uniqueId: {
-    type: "String",
-  },
-  nickName: {
-    type: "String",
-  },
-  signature: {
-    type: "String",
-  },
-  covers: {
-    type: ["String"],
-  },
-  coversMedium: {
-    type: ["String"],
-  },
-  following: {
+  followers_count: {
     type: "Number",
   },
-  fans: {
+  following_count: {
     type: "Number",
   },
-  heart: {
+  total_posts_count: {
     type: "Number",
-  },
-  video: {
-    type: "Number",
-  },
-  verified: {
-    type: "Boolean",
-  },
-  digg: {
-    type: "Number",
-  },
-  ftc: {
-    type: "Boolean",
-  },
-  relation: {
-    type: "Number",
-  },
-  openFavorite: {
-    type: "Boolean",
   },
   latest_posts: {
     type: ["Mixed"],

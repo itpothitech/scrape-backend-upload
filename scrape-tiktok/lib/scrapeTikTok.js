@@ -1,8 +1,7 @@
 const TikTokScraper = require("tiktok-scraper");
 const mongoose = require("mongoose");
 
-const TiktokPost = require("../models/tiktok-post");
-const TiktokProfile = require("../models/tiktok-profile");
+const TiktokProfile = require("../model/tiktok-profile");
 
 const PROXIES = [
   "80.187.140.26:8080",
@@ -29,8 +28,13 @@ class ScrapeTikTok {
         const date = currentDate.getDate();
         const scrapeDate = year + "-" + month + "-" + date;
 
-        console.log("***** Insta scraping ***** [" + currentDate + "]");
-
+        console.log(
+          "***** TikTok scraping - user:[" +
+            this._id +
+            "] ***** [" +
+            currentDate +
+            "]"
+        );
         const posts = await TikTokScraper.user(this._id, {
           number: this._count,
           timeout: TIMEOUT,
@@ -40,17 +44,13 @@ class ScrapeTikTok {
         const numOfRecords = collectorArray.length;
         console.log("Going to save [", numOfRecords, "] records in DB.");
         if (numOfRecords == 0) {
-          return reject({
+          return resolve({
+            id: this._id,
+            scrapeDate: scrapeDate,
             status: "FAILED",
             message: "Couldn not scrape any posts for user [" + this._id + "]",
           });
         }
-
-        // const newBulkArray = [];
-        // collectorArray.forEach((element) => {
-        //   newBulkArray.push({ _id: element.id, element });
-        // });
-        // console.log("newBulkArray =>", newBulkArray);
 
         if (collectorArray) {
           let profile;
@@ -84,7 +84,7 @@ class ScrapeTikTok {
 
           const profileArray = [];
           profileArray.push({ profile, latest_posts: latestPostsCollector });
-          console.log("profileArray =>", profileArray);
+          // console.log("profileArray =>", profileArray);
 
           //Connect DB
           await mongoose
@@ -104,36 +104,24 @@ class ScrapeTikTok {
           } catch (error) {
             // console.log(error);
           }
+          // close DB connection
+          mongoose.disconnect();
         } //end of if
 
-        // const profile = await TikTokScraper.getUserProfileInfo(this._id);
-        // const profileArray = [];
-        // profileArray.push({
-        //   scrape_date: scrapeDate,
-        //   profile,
-        //   latest_posts: collectorArray,
-        // });
-
-        // Save post details in DB
-        // const createdTiktokPost = new TiktokPost();
-        // try {
-        //   await createdTiktokPost.collection.insertMany(newBulkArray, {
-        //     ordered: false,
-        //   });
-        // } catch (err) {
-        //   // console.log(err);
-        // }
         currentDate = new Date();
         const timeTaken = currentDate.getTime() - start;
         console.log(
-          "InstaScrape=ID:[" + this._id + "]=perf-time:[" + timeTaken + "]"
+          "TikTokScrape=ID:[" + this._id + "]=perf-time:[" + timeTaken + "]"
         );
         mongoose.disconnect();
         //Send response
         return resolve({
           id: this._id,
+          scrapeDate: scrapeDate,
+          status: "SUCCESS",
           recordsEntered: this._count,
           recrdsScraped: numOfRecords,
+          timeTaken: timeTaken,
         });
       } catch (error) {
         mongoose.disconnect();

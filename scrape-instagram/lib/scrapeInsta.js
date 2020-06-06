@@ -29,7 +29,13 @@ class ScrapeInsta {
         const date = currentDate.getDate();
         const scrapeDate = year + "-" + month + "-" + date;
 
-        console.log("***** Insta scraping ***** [" + currentDate + "]");
+        console.log(
+          "***** Instagram scraping - user:[" +
+            this._id +
+            "] ***** [" +
+            currentDate +
+            "]"
+        );
         const userData = await InstaTouch.getUserMeta(this._id, {
           count: this._count,
           timeout: TIMEOUT,
@@ -40,7 +46,9 @@ class ScrapeInsta {
         const numOfRecords = collectorArray.length;
         console.log("Going to save [", numOfRecords, "] records in DB.");
         if (numOfRecords == 0) {
-          return reject({
+          return resolve({
+            id: this._id,
+            scrapeDate: scrapeDate,
             status: "FAILED",
             message: "Couldn not scrape any posts for user [" + this._id + "]",
           });
@@ -111,16 +119,20 @@ class ScrapeInsta {
 
           // close DB connection
           mongoose.disconnect();
-          currentDate = new Date();
-          const timeTaken = currentDate.getTime() - start;
-          console.log(
-            "InstaScrape=ID:[" + this._id + "]=perf-time:[" + timeTaken + "]"
-          );
         } // End of IF condition
+
+        currentDate = new Date();
+        const timeTaken = currentDate.getTime() - start;
+        console.log(
+          "InstaScrape=ID:[" + this._id + "]=perf-time:[" + timeTaken + "]"
+        );
         return resolve({
           id: this._id,
+          scrapeDate: scrapeDate,
+          status: "SUCCESS",
           recordsEntered: this._count,
           postsScraped: numOfRecords,
+          timeTaken: timeTaken,
         });
       } catch (error) {
         mongoose.disconnect();
