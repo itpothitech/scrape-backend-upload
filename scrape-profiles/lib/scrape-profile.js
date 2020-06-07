@@ -35,7 +35,7 @@ vending.create = async (options) => {
   let profiles;
   try {
     profiles = await UserProfile.find({ platform: options.type });
-    console.log("profiles =>", profiles);
+    // console.log("profiles =>", profiles);
   } catch (error) {
     mongoose.disconnect();
     console.log(error);
@@ -43,7 +43,6 @@ vending.create = async (options) => {
   // close DB connection
   mongoose.disconnect();
 
-  // let userProfile = ["natgeo", "pubity", "eloisefouladgar"];
   let userProfile = [];
   profiles.forEach((element) => {
     userProfile.push(element.user_name);
