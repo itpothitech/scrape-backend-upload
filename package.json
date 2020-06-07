@@ -6,7 +6,9 @@
     "scrape-profiles": "./scrape-profiles/cli.js"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js",
+    "dev": "nodemon app.js"
   },
   "dependencies": {
     "async": "^3.1.0",
@@ -15,6 +17,10 @@
     "xlsx": "^0.16.1",
     "mongoose": "^5.9.7",
     "instatouch": "^2.2.5",
-    "tiktok-scraper": "^1.1.19"
+    "tiktok-scraper": "^1.1.19",
+    "multer": "^1.4.2",
+    "express": "^4.17.1",
+    "path": "^0.12.7",
+    "nodemon": "^2.0.4"
   }
 }

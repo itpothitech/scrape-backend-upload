@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <meta
+      name="description"
+      content="Web site for searching uploadind user profiles"
+    />
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+    <!--
+      Notice the use of %PUBLIC_URL% in the tags above.
+      It will be replaced with the URL of the `public` folder during the build.
+      Only files inside the `public` folder can be referenced from the HTML.
+
+      Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
+      work correctly both with client-side routing and a non-root public URL.
+      Learn how to configure a non-root public URL by running `npm run build`.
+    -->
+    <title>Upload user profiles</title>
+    <link rel="stylesheet" href="index.css" />
+  </head>
+
+<body>
+    <header class="main-header">
+        <span>
+        <span>
+        <span>
+        <h1 class="main-navigation__title">
+            Upload / update user profiles
+        </h1>  
+    </header>
+<main>
+    <form class="post-form" method="POST" action="/upload-user-profile" enctype="multipart/form-data">
+        <div>
+            <label><b><i>[Upload]</i> Select your profile list:</b></label>
+            <input class="button" type="file" name="excel_upload" />
+        </div>
+        <div>
+            <input class="button-submit" type="submit" name="btn_upload_user_profile" value="Upload" />
+        </div>
+    </form>
+    <form class="post-form" method="POST" action="/update-user-profile" enctype="multipart/form-data">
+        <div>
+            <label><b><i>[Update]</i> Select your profile list:</b></label>
+            <input class="button" type="file" name="excel_update" />
+        </div>
+        <div>
+            <input class="button-submit"  type="submit" name="btn_update_user_profile" value="Update" />
+        </div>
+    </form>
+</main>
+</body>
+</html>
