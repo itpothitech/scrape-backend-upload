@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const instaScrape = require("../../scrape-instagram/lib/instance");
 const tiktokScrape = require("../../scrape-tiktok/lib/instance");
 const UserProfile = require("../model/user-profiles");
+const ScrapeStatus = require("../model/scrape-status");
 
 const MAX_COUNT = 12;
 
@@ -35,13 +36,21 @@ vending.create = async (options) => {
   let profiles;
   try {
     profiles = await UserProfile.find({ platform: options.type });
-    // console.log("profiles =>", profiles);
   } catch (error) {
-    mongoose.disconnect();
     console.log(error);
   }
-  // close DB connection
+
   mongoose.disconnect();
+
+  if (profiles.length == 0) {
+    return {
+      status: "FAILED",
+      message:
+        "Couldnt fetch any user profile records for patform [" +
+        options.type +
+        "]",
+    };
+  }
 
   let userProfile = [];
   profiles.forEach((element) => {
@@ -57,10 +66,13 @@ vending.create = async (options) => {
         number: MAX_COUNT,
         cli: options.cli,
       };
-      let out = await tiktokScrape(inputs).getPosts();
-      outArray.push(out);
+      try {
+        let out = await tiktokScrape(inputs).getPosts();
+        outArray.push(out);
+      } catch (error) {
+        outArray.push(error);
+      }
     }
-    return outArray;
   } else if (options.type == "instagram") {
     for (const userId of userProfile) {
       const inputs = {
@@ -69,15 +81,54 @@ vending.create = async (options) => {
         number: MAX_COUNT,
         cli: options.cli,
       };
-      let out = await instaScrape(inputs).getPosts();
-      outArray.push(out);
+      try {
+        let out = await instaScrape(inputs).getPosts();
+        outArray.push(out);
+      } catch (error) {
+        outArray.push(error);
+      }
     }
-    return outArray;
   } else {
+    mongoose.disconnect();
     return {
       status: "FAILED",
       message: "Unsupported platform",
     };
+  }
+
+  if (outArray.length > 0) {
+    // Save the status in DB
+    await mongoose
+      .connect(
+        // `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster-free-2u1w7.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`
+        `mongodb+srv://scraper:eGRsfe2ZFZnZapuo@cluster-free-2u1w7.mongodb.net/dev_local?retryWrites=true&w=majority`,
+        {
+          useNewUrlParser: true,
+          useUnifiedTopology: true,
+        }
+      )
+      .catch((error) => {
+        handleError(error);
+        console.log(error);
+      });
+
+    console.log(
+      "Going to fetch users for [",
+      options.type,
+      "] records from database."
+    );
+
+    try {
+      await ScrapeStatus.collection.insertMany(outArray, {
+        ordered: false,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+
+    // close DB connection
+    mongoose.disconnect();
+    return outArray;
   }
 };
 

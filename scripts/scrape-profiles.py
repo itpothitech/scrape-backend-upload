@@ -1,7 +1,7 @@
 #! python3
 from jproperties import Properties 
 from Naked.toolshed.shell import execute_js, muterun_js
-
+import datetime as Date
 
 configs = Properties()
 
@@ -28,19 +28,23 @@ print ("SCRAPE_INSTA =>" + SCRAPE_INSTA)
 print ("INSTA_SCRAPER =>" + INSTA_SCRAPER)
 print ("INSTA_SCRAPER_ARGS =>" + INSTA_SCRAPER_ARGS)
 
+print ("[START] TikTok scraping process at [", Date.datetime.now(), "]")
 if (SCRAPE_TIKTOK):
     tiktok_res = muterun_js(TIKTOK_SCRAPER_ARGS)
 
 if tiktok_res.exitcode == 0:
   print(tiktok_res.stdout)
 else:
-  sys.stderr.write(tiktok_res.stderr)
+  print(tiktok_res.stderr)
 
+print ("[END] TikTok scraping process at [", Date.datetime.now(), "]")
 
+print ("[START] Instgram scraping process at [", Date.datetime.now(), "]")
 if (SCRAPE_INSTA):
     insta_res = muterun_js(INSTA_SCRAPER_ARGS)
     
 if insta_res.exitcode == 0:
   print(insta_res.stdout)
 else:
-  sys.stderr.write(insta_res.stderr)
+  print(insta_res.stderr)
+print ("[END] Instgram scraping process at [", Date.datetime.now(), "]")

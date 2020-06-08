@@ -20,14 +20,14 @@ class ScrapeTikTok {
 
   getPosts() {
     return new Promise(async (resolve, reject) => {
-      try {
-        let currentDate = new Date();
-        const start = currentDate.getTime();
-        const year = currentDate.getFullYear();
-        const month = currentDate.getMonth() + 1;
-        const date = currentDate.getDate();
-        const scrapeDate = year + "-" + month + "-" + date;
+      let currentDate = new Date();
+      const start = currentDate.getTime();
+      const year = currentDate.getFullYear();
+      const month = currentDate.getMonth() + 1;
+      const date = currentDate.getDate();
+      const scrapeDate = year + "-" + month + "-" + date;
 
+      try {
         console.log(
           "***** TikTok scraping - user:[" +
             this._id +
@@ -46,6 +46,7 @@ class ScrapeTikTok {
         if (numOfRecords == 0) {
           return resolve({
             id: this._id,
+            platform: "tiktok",
             scrapeDate: scrapeDate,
             status: "FAILED",
             message: "Couldn not scrape any posts for user [" + this._id + "]",
@@ -117,6 +118,7 @@ class ScrapeTikTok {
         //Send response
         return resolve({
           id: this._id,
+          platform: "tiktok",
           scrapeDate: scrapeDate,
           status: "SUCCESS",
           recordsEntered: this._count,
@@ -124,8 +126,15 @@ class ScrapeTikTok {
           timeTaken: timeTaken,
         });
       } catch (error) {
+        console.log(error);
         mongoose.disconnect();
-        return reject(error);
+        return reject({
+          id: this._id,
+          platform: "tiktok",
+          scrapeDate: scrapeDate,
+          status: "FAILED",
+          message: "Scrape API error for user [" + this._id + "]",
+        });
       }
     });
   }

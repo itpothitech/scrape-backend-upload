@@ -15,20 +15,14 @@ class ScrapeInsta {
 
   getPosts() {
     return new Promise(async (resolve, reject) => {
+      let currentDate = new Date();
+      const start = currentDate.getTime();
+      const year = currentDate.getFullYear();
+      const month = currentDate.getMonth() + 1;
+      const date = currentDate.getDate();
+      const scrapeDate = year + "-" + month + "-" + date;
+
       try {
-        // const posts = await InstaTouch.user(this._id, {
-        //   count: this._count,
-        //   timeout: TIMEOUT,
-        // });
-        // console.log(posts);
-
-        let currentDate = new Date();
-        const start = currentDate.getTime();
-        const year = currentDate.getFullYear();
-        const month = currentDate.getMonth() + 1;
-        const date = currentDate.getDate();
-        const scrapeDate = year + "-" + month + "-" + date;
-
         console.log(
           "***** Instagram scraping - user:[" +
             this._id +
@@ -48,6 +42,7 @@ class ScrapeInsta {
         if (numOfRecords == 0) {
           return resolve({
             id: this._id,
+            platform: "instagram",
             scrapeDate: scrapeDate,
             status: "FAILED",
             message: "Couldn not scrape any posts for user [" + this._id + "]",
@@ -128,6 +123,7 @@ class ScrapeInsta {
         );
         return resolve({
           id: this._id,
+          platform: "instagram",
           scrapeDate: scrapeDate,
           status: "SUCCESS",
           recordsEntered: this._count,
@@ -137,7 +133,13 @@ class ScrapeInsta {
       } catch (error) {
         mongoose.disconnect();
         console.log(error);
-        return reject(error);
+        return reject({
+          id: this._id,
+          platform: "instagram",
+          scrapeDate: scrapeDate,
+          status: "FAILED",
+          message: "Scrape API error for user [" + this._id + "]",
+        });
       }
     });
   }
