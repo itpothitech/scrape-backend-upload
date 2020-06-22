@@ -10,7 +10,7 @@ const userScrapeStatus = new Schema({
     type: "string",
   },
   scrapeDate: {
-    type: "String",
+    type: "Date",
   },
   status: {
     type: "String",

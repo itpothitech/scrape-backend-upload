@@ -4,10 +4,10 @@ const Schema = mongoose.Schema;
 
 const userProfileSchema = new Schema({
   create_date: {
-    type: "String",
+    type: "Date",
   },
   modify_date: {
-    type: "String",
+    type: "Date",
   },
   platform: {
     type: "String",
