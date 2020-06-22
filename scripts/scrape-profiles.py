@@ -2,12 +2,10 @@
 from jproperties import Properties 
 from Naked.toolshed.shell import execute_js, muterun_js
 import datetime as Date
-import threading
 import concurrent.futures
 import sys
 
 from pymongo import MongoClient
-from pprint import pprint
 
 def fetchRecordsFromDB(DB_SERVER, DB_USER, DB_PASSWORD, DB_NAME):
   client = MongoClient("mongodb+srv://"+DB_USER+":"+DB_PASSWORD+"@"+DB_SERVER+"/"+DB_NAME+"?retryWrites=true&w=majority")
