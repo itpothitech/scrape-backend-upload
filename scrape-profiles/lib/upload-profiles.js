@@ -17,13 +17,13 @@ vending.upload = async (options) => {
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth() + 1;
   const date = currentDate.getDate();
-  const scrapeDate = year + "-" + month + "-" + date;
+  // const scrapeDate = year + "-" + month + "-" + date;
+  const scrapeDate = currentDate.getTime();
 
   try {
     if (fs.existsSync(options.file)) {
       const workbook = xlsx.readFile(options.file);
       const sheet_name_list = workbook.SheetNames;
-      //   console.log(xlsx.utils.sheet_to_csv(workbook.Sheets[sheet_name_list[0]]));
       const inputDataSet = xlsx.utils
         .sheet_to_csv(workbook.Sheets[sheet_name_list[0]])
         .trim()
@@ -96,9 +96,25 @@ vending.upload = async (options) => {
               platform: element.platform,
               user_name: element.user_name,
             };
-            const update_query = {
-              $set: { modify_date: scrapeDate, tags: element.tags },
+            let update_query = {
+              $set: {
+                create_date: scrapeDate,
+                modify_date: scrapeDate,
+                tags: element.tags,
+              },
             };
+
+            const userData = await UserProfile.find(find_query);
+            if (userData.length > 0) {
+              update_query = {
+                $set: {
+                  create_date: userData[0].create_date,
+                  modify_date: scrapeDate,
+                  tags: element.tags,
+                },
+              };
+              console.log("Found user exiting =>", update_query);
+            }
             const option_query = { upsert: true };
             const result = await UserProfile.collection.findOneAndUpdate(
               find_query,

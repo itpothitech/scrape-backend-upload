@@ -20,7 +20,8 @@ class ScrapeInsta {
       const year = currentDate.getFullYear();
       const month = currentDate.getMonth() + 1;
       const date = currentDate.getDate();
-      const scrapeDate = year + "-" + month + "-" + date;
+      // const scrapeDate = year + "-" + month + "-" + date;
+      const scrapeDate = currentDate.getTime();
 
       try {
         console.log(
@@ -33,8 +34,9 @@ class ScrapeInsta {
         const userData = await InstaTouch.getUserMeta(this._id, {
           count: this._count,
           timeout: TIMEOUT,
+          session: "sessionid=31834034497%3AXlPlMzyBav5659%3A5",
         });
-        // console.log(userData);
+        console.log(userData);
         const collectorArray =
           userData.graphql.user.edge_owner_to_timeline_media.edges;
         const numOfRecords = collectorArray.length;
@@ -86,9 +88,8 @@ class ScrapeInsta {
             following_count: userData.graphql.user.edge_follow.count,
             total_posts_count:
               userData.graphql.user.edge_owner_to_timeline_media.count,
-            latest_posts: latestPostsCollector,
           };
-          profileArray.push({ profile });
+          profileArray.push({ profile, latest_posts: latestPostsCollector });
           // console.log("profileArray ======>", profileArray);
 
           //Connect DB

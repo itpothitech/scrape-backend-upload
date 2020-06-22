@@ -2,6 +2,7 @@
 
 # dependencies
 /node_modules
+/uploads
 scrape-tiktok/node_modules
 scrape-instagram/node_modules
 scrape-profiles/node_modules

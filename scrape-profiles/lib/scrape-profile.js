@@ -57,9 +57,14 @@ vending.create = async (options) => {
     userProfile.push(element.user_name);
   });
 
+  // Index range is passed from upstream application that will calculate number of user profiles exist in the database
+  // and calculate. It is required to call the scraper from multiple thread.
+  let indexedUserProfile = userProfile.slice(options.start, options.end);
+  console.log("indexedUserProfile =>", indexedUserProfile.length);
+
   let outArray = [];
   if (options.type == "tiktok") {
-    for (const userId of userProfile) {
+    for (const userId of indexedUserProfile) {
       const inputs = {
         id: userId,
         scrapeType: "user",
@@ -74,7 +79,7 @@ vending.create = async (options) => {
       }
     }
   } else if (options.type == "instagram") {
-    for (const userId of userProfile) {
+    for (const userId of indexedUserProfile) {
       const inputs = {
         id: userId,
         scrapeType: "user",

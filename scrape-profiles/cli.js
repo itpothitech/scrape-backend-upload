@@ -64,6 +64,18 @@ yargs
       describe:
         "Number of user profiles to scrape. If you will set 0 then all profiles will be scraped",
     },
+    start: {
+      alias: "s",
+      default: 0,
+      describe:
+        "Start index of the user profile array. CAUTION: you need to calculate and pass with index range",
+    },
+    end: {
+      alias: "e",
+      default: 0,
+      describe:
+        "End index of the user profile array. CAUTION: you need to calculate and pass with index range",
+    },
     file: {
       alias: "f",
       default: "",
