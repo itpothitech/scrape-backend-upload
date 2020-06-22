@@ -1,3 +1,4 @@
 jproperties==2.1.0
 naked==0.1.31
-pymongo[tls]==3.10.1
+pymongo==3.10.1
+dnspython=1.16.0
