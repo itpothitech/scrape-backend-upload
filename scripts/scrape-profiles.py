@@ -1,12 +1,15 @@
 #! python3
-from jproperties import Properties 
+from jproperties import Properties
 from Naked.toolshed.shell import execute_js, muterun_js
 import datetime as Date
 import concurrent.futures
-import sys
+import sys, os
 
 from pymongo import MongoClient
 
+home_dir = os.environ["HOME"]
+script_home = home_dir+"/scrape-backend-upload"
+config = script_home+"/scrape.properties"
 def fetchRecordsFromDB(DB_SERVER, DB_USER, DB_PASSWORD, DB_NAME):
   client = MongoClient("mongodb+srv://"+DB_USER+":"+DB_PASSWORD+"@"+DB_SERVER+"/"+DB_NAME+"?retryWrites=true&w=majority")
   clientDB = client[DB_NAME]
@@ -19,7 +22,7 @@ def fetchRecordsFromDB(DB_SERVER, DB_USER, DB_PASSWORD, DB_NAME):
 def execute_scrape(argString):
   print(argString)
   res = muterun_js(argString)
-    
+
   if res.exitcode == 0:
     print(res.stdout)
   else:
@@ -32,14 +35,14 @@ if __name__ == "__main__":
 
   # Get properties
   configs = Properties()
-  with open('scrape.properties', 'rb') as config_file:
+  with open(config, 'rb') as config_file:
       configs.load(config_file)
 
   PROFILES_PER_THREAD = int(configs.get("PROFILES_PER_THREAD").data)
   SCRAPE_TIKTOK = configs.get("SCRAPE_TIKTOK").data
   SCRAPE_INSTA = configs.get("SCRAPE_INSTA").data
-  SCRAPER = configs.get("SCRAPER").data
-  # DB Configs 
+  SCRAPER = script_home+"/"+configs.get("SCRAPER").data
+  # DB Configs
   DB_SERVER = configs.get("DB_SERVER").data
   DB_USER = configs.get("DB_USER").data
   DB_NAME = configs.get("DB_NAME").data
@@ -80,7 +83,7 @@ if __name__ == "__main__":
     with concurrent.futures.ThreadPoolExecutor(max_workers=maxThreads) as executor:
         executor.map(execute_scrape, SCRAPER_ARGS)
     print ("[END] TikTok scraping process at [", Date.datetime.now(), "]")
-    
+
   if (SCRAPE_INSTA):
     print ("[START] Instgram scraping process at [", Date.datetime.now(), "]")
     SCRAPER_ARGS = list()
@@ -105,14 +108,13 @@ if __name__ == "__main__":
         else:
           newEnd = start + PROFILES_PER_THREAD
           SCRAPER_ARGS.append(SCRAPER + " scrape instagram -s " + str(newStart) + " -e " + str(newEnd))
-      
+
     maxThreads = len(SCRAPER_ARGS)
     print("maxThreads =>", maxThreads)
 
     # Spawn threads to run scrape
     with concurrent.futures.ThreadPoolExecutor(max_workers=maxThreads) as executor:
-        executor.map(execute_scrape, SCRAPER_ARGS) 
+        executor.map(execute_scrape, SCRAPER_ARGS)
     print ("[END] Instgram scraping process at [", Date.datetime.now(), "]")
 
-  sys.exit(0) 
-
+  sys.exit(0)

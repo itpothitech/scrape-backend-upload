@@ -25,7 +25,8 @@ class ScrapeTikTok {
       const year = currentDate.getFullYear();
       const month = currentDate.getMonth() + 1;
       const date = currentDate.getDate();
-      const scrapeDate = year + "-" + month + "-" + date;
+      // const scrapeDate = year + "-" + month + "-" + date;
+      const scrapeDate = currentDate.getTime();
 
       try {
         console.log(

@@ -34,7 +34,7 @@ class ScrapeInsta {
         const userData = await InstaTouch.getUserMeta(this._id, {
           count: this._count,
           timeout: TIMEOUT,
-          // session: "sessionid=31834034497%3AXlPlMzyBav5659%3A5",
+          session: "sessionid=39365049967%3Ai1tcrbHkPIGHZV%3A5",
         });
         console.log(userData);
         const collectorArray =
