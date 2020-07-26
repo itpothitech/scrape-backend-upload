@@ -34,6 +34,10 @@ def fetchRecordsFromDB(DB_SERVER, DB_USER, DB_PASSWORD, DB_NAME):
   #Scrape insta user
   tmpLongDelayCnt = 1
   for instaUser in userProfilesInstagram:
+    shortDelay = random.randint(int(INSTA_SCRAPE_SHORT_DELAY), int(INSTA_SCRAPE_SHORT_DELAY) + 30)
+    longDelay = random.randint(int(INSTA_SCRAPE_LONG_DELAY), int(INSTA_SCRAPE_LONG_DELAY) + 100)
+    longDelayCnt = random.randint(int(INSTA_SCRAPE_LONG_DELAY_CONT), int(INSTA_SCRAPE_LONG_DELAY_CONT) + 4)
+
     instaUser = instaUser["user_name"]
     
     #Scrape user profile
@@ -50,11 +54,9 @@ def fetchRecordsFromDB(DB_SERVER, DB_USER, DB_PASSWORD, DB_NAME):
       print("failed to store in DB")
 
     # Short sleep between each scrape
-    shortDelay = random.randint(int(INSTA_SCRAPE_SHORT_DELAY), int(INSTA_SCRAPE_SHORT_DELAY) + 30)
     time.sleep(shortDelay)
-
-    if (tmpLongDelayCnt == INSTA_SCRAPE_LONG_DELAY_CONT):
-      time.sleep(int(INSTA_SCRAPE_LONG_DELAY))
+    if (tmpLongDelayCnt == longDelayCnt):
+      time.sleep(longDelay)
     else:
       tmpLongDelayCnt = tmpLongDelayCnt + 1
     
