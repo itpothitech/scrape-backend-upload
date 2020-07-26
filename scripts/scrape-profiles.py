@@ -53,6 +53,16 @@ if __name__ == "__main__":
   print("userCountTikTok =>", userCountTikTok)
   print("userCountInstagram =>", userCountInstagram)
 
+  if ("true" == SCRAPE_TIKTOK.lower()):
+      SCRAPE_TIKTOK = True
+  else:
+      SCRAPE_TIKTOK = False
+
+  if ("true" == SCRAPE_INSTA.lower()):
+      SCRAPE_INSTA = True
+  else:
+      SCRAPE_INSTA = False
+
   if (SCRAPE_TIKTOK):
     print ("[START] TikTok scraping process at [", Date.datetime.now(), "]")
     SCRAPER_ARGS = list()
