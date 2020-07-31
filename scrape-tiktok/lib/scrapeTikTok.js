@@ -41,6 +41,13 @@ class ScrapeTikTok {
           timeout: TIMEOUT,
         });
         // console.log(posts);
+
+        const userMeta  = await TikTokScraper.getUserProfileInfo(this._id, {
+          number: this._count,
+          timeout: TIMEOUT,
+        });
+        // console.log("User meta data ==>", userMeta)
+
         const collectorArray = posts.collector;
         const numOfRecords = collectorArray.length;
         console.log("Going to save [", numOfRecords, "] records in DB.");
@@ -57,20 +64,23 @@ class ScrapeTikTok {
         if (collectorArray) {
           let profile;
           const latestPostsCollector = [];
+          let profile_pic = ""
           collectorArray.forEach((element) => {
-            profile = {
-              scrape_date: scrapeDate,
-              user_id: element.authorMeta.id,
-              user_name: element.authorMeta.name,
-              full_name: element.authorMeta.nickName,
-              biography: element.authorMeta.signature,
-              profile_photo: element.authorMeta.avatar,
-              is_verified: element.authorMeta.verified,
-              followers_count: element.authorMeta.fans,
-              following_count: element.authorMeta.following,
-              total_posts_count: element.authorMeta.video,
-            };
+            // console.log("Author metadata ==>", element)
+            // profile = {
+            //   scrape_date: scrapeDate,
+            //   user_id: element.authorMeta.id,
+            //   user_name: element.authorMeta.name,
+            //   full_name: element.authorMeta.nickName,
+            //   biography: element.authorMeta.signature,
+            //   profile_photo: element.authorMeta.avatar,
+            //   is_verified: element.authorMeta.verified,
+            //   followers_count: element.authorMeta.fans,
+            //   following_count: element.authorMeta.following,
+            //   total_posts_count: element.authorMeta.video,
+            // };
 
+            profile_pic = element.authorMeta.avatar
             const eachPost = {
               post_id: element.id,
               post_link: element.webVideoUrl,
@@ -84,6 +94,22 @@ class ScrapeTikTok {
             latestPostsCollector.push(eachPost);
           });
 
+          //Take user profile details from API: getUserProfileInfo
+          if (profile_pic == "") {
+            profile_pic = userMeta.covers[0]
+          }
+          profile = {
+            scrape_date: scrapeDate,
+            user_id: userMeta.userId,
+            user_name: userMeta.uniqueId,
+            full_name: userMeta.nickName,
+            biography: userMeta.signature,
+            profile_photo: profile_pic,
+            is_verified: userMeta.verified,
+            followers_count: userMeta.fans,
+            following_count: userMeta.following,
+            total_posts_count: userMeta.video,
+          };
           const profileArray = [];
           profileArray.push({ profile, latest_posts: latestPostsCollector });
           // console.log("profileArray =>", profileArray);
